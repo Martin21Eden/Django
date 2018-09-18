@@ -22,6 +22,6 @@ def index(request):
                         'icon':r['current']['condition']['icon']
         }
         weather_cities.append(city_weather)
-    context = {'weather_cities': weather_cities, 'form': form}
+    context = {'weather_cities': weather_cities, 'forms': form}
 
     return render(request, 'weather/weather.html', context)
