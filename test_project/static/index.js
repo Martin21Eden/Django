@@ -48,7 +48,7 @@ window.onload = function() {
 
             loginBtn.style.visibility = "visible";
             regBtn.style.visibility = "visible";
-            rubricListLoad()
+            postListLoad()
         });
 
 
@@ -77,7 +77,7 @@ window.onload = function() {
                         'application/json');
                         loginer.send(data);
                         $("#reg-modal").modal('hide');
-                        rubricListLoad()
+                        postListLoad()
                 }
                 else {
                     window.alert(request.responseText);
@@ -101,7 +101,7 @@ window.onload = function() {
                     let data = JSON.parse(loginer.responseText);
                     window.localStorage.setItem('access_token', data.access);
                     window.localStorage.setItem('refresh_token', data.refresh);
-                    rubricListLoad();
+                    postListLoad();
                     $("#myModal").modal('hide');
                     LogoutBtn.style.visibility = 'visible';
                     loginBtn.style.visibility = "hidden";
@@ -131,8 +131,8 @@ window.onload = function() {
     function refreshToken(){
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
-        if (rubricListLoader.readyState === 4) {
-            if (rubricListLoader.status === 200) {
+        if (postListLoader.readyState === 4) {
+            if (postListLoader.status === 200) {
                 let data = JSON.parse(request.responseText);
                     window.localStorage.setItem('access_token', data.access);
             }
@@ -153,14 +153,14 @@ window.onload = function() {
     }
 
     
-    function rubricLoad(evt){
+    function postLoad(evt){
     evt.preventDefault();
     let url = evt.target.href;
     $("#post-modal").modal();
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
-        if (rubricListLoader.readyState === 4) {
-            if (rubricListLoader.status === 200) {
+        if (postListLoader.readyState === 4) {
+            if (postListLoader.status === 200) {
                 let data = JSON.parse(request.responseText);
                 id.value = data.id;
                 title.value = data.title;
@@ -177,8 +177,8 @@ window.onload = function() {
     }
     
 
-    let rubricForm = document.getElementById('rubric_form');
-    rubricForm.addEventListener('submit', function (evt) {
+    let postForm = document.getElementById('rubric_form');
+    postForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
         let vid = id.value;
         let url = 'api/posts/';
@@ -193,8 +193,8 @@ window.onload = function() {
         request.onreadystatechange = function () {
             if (request.readyState === 4) {
                 if (request.status === 201 || request.status === 200) {
-                    rubricListLoad();
-                    rubricForm.reset();
+                    postListLoad();
+                    postForm.reset();
                     id.value = '';
                         $("#post-modal").modal('hide');
                 } else if (request.status === 401 ) {
@@ -214,27 +214,27 @@ window.onload = function() {
     });
 
 
-    let rubricDeleter= new XMLHttpRequest();
-    rubricDeleter.onreadystatechange = function () {
-        if (rubricDeleter.readyState === 4) {
-            if (rubricDeleter.status === 204) {
-                console.log(rubricDeleter.responseText);
-                rubricListLoad();
-            } else if (rubricDeleter.status === 401 ) {
+    let postDeleter= new XMLHttpRequest();
+    postDeleter.onreadystatechange = function () {
+        if (postDeleter.readyState === 4) {
+            if (postDeleter.status === 204) {
+                console.log(postDeleter.responseText);
+                postListLoad();
+            } else if (postDeleter.status === 401 ) {
                     refreshToken()
             } else {
-                window.alert(rubricDeleter.responseText);
+                window.alert(postDeleter.responseText);
             }
         }
     };
 
 
-    function rubricDelete(evt) {
+    function postDelete(evt) {
         evt.preventDefault();
         let url = evt.target.href;
-        rubricDeleter.open('DELETE', url, true);
-        rubricDeleter.setRequestHeader('Authorization','Bearer '+ window.localStorage.getItem('access_token'));
-        rubricDeleter.send();
+        postDeleter.open('DELETE', url, true);
+        postDeleter.setRequestHeader('Authorization','Bearer '+ window.localStorage.getItem('access_token'));
+        postDeleter.send();
     }
 
 
@@ -257,12 +257,12 @@ window.onload = function() {
     }
 
 
-    let rubricListLoader = new XMLHttpRequest();
-    rubricListLoader.onreadystatechange = function () {
-        if (rubricListLoader.readyState === 4) {
+    let postListLoader = new XMLHttpRequest();
+    postListLoader.onreadystatechange = function () {
+        if (postListLoader.readyState === 4) {
 
-            if (rubricListLoader.status === 200) {
-                let data = JSON.parse(rubricListLoader.responseText);
+            if (postListLoader.status === 200) {
+                let data = JSON.parse(postListLoader.responseText);
                 let s = '';
 
                 for (i = 0; i < data.length; i++) {
@@ -293,9 +293,9 @@ window.onload = function() {
 
                 for (i = 0; i < data.length*4; i++) {
                     if (links[i].className === 'detail') {
-                        links[i].addEventListener( 'click' , rubricLoad);
+                        links[i].addEventListener( 'click' , postLoad);
                     } else if (links[i].className === 'delete') {
-                        links[i].addEventListener('click', rubricDelete);
+                        links[i].addEventListener('click', postDelete);
                     } else if (links[i].className === 'like') {
                         links[i].addEventListener( 'click', putLike);
                     } else if (links[i].className === 'unlike') {
@@ -345,13 +345,13 @@ window.onload = function() {
     }
 
 
-    function rubricListLoad() {
-        rubricListLoader.open('GET', domain + 'api/posts/', true);
-        rubricListLoader.send();
+    function postListLoad() {
+        postListLoader.open('GET', domain + 'api/posts/', true);
+        postListLoader.send();
     }
 
 
-    function pop() {
+    function headerChange() {
         if ( window.localStorage.getItem('access_token') !== null){
             LogoutBtn.style.visibility = 'visible';
             loginBtn.style.visibility = "hidden";
@@ -364,6 +364,6 @@ window.onload = function() {
     }
 
 
-pop();
-rubricListLoad();
+headerChange();
+postListLoad();
 };

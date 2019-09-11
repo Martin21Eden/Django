@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, CreateOrReadOnly
 
 
 class APIPostViewSet(ModelViewSet):
@@ -27,6 +27,7 @@ class APIPostViewSet(ModelViewSet):
 class APIUserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (CreateOrReadOnly,)
 
 
 class GetUserData(APIView):
