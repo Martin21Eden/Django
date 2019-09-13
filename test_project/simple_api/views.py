@@ -39,39 +39,29 @@ class GetUserData(APIView):
         return Response(serializer.data)
 
 
-class PostLikeAPIToggle(APIView):
+class PostLikeDislikeAPIToggle(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PostSerializer
 
-    def get(self, request, pk):
+    def get(self, request, pk, value):
         obj = get_object_or_404(Post, pk=pk)
         user = request.user
-        if user in obj.likes.all():
-            obj.likes.remove(user)
-        else:
-            obj.likes.add(user)
-        if user in obj.unlikes.all():
-            obj.unlikes.remove(user)
-        obj.like = obj.likes.count()
-        obj.unlike = obj.unlikes.count()
-        obj.save()
-        serializer = PostSerializer(obj)
-        return Response(serializer.data)
 
+        if value == 'like':
+            if user in obj.likes.all():
+                obj.likes.remove(user)
+            else:
+                obj.likes.add(user)
+            if user in obj.unlikes.all():
+                obj.unlikes.remove(user)
+        elif value == 'unlike':
+            if user in obj.unlikes.all():
+                obj.unlikes.remove(user)
+            else:
+                obj.unlikes.add(user)
+            if user in obj.likes.all():
+                obj.likes.remove(user)
 
-class PostUnLikeAPIToggle(APIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = PostSerializer
-
-    def get(self, request, pk):
-        obj = get_object_or_404(Post, pk=pk)
-        user = request.user
-        if user in obj.unlikes.all():
-            obj.unlikes.remove(user)
-        else:
-            obj.unlikes.add(user)
-        if user in obj.likes.all():
-            obj.likes.remove(user)
         obj.like = obj.likes.count()
         obj.unlike = obj.unlikes.count()
         obj.save()
