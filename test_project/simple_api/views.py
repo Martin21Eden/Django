@@ -44,18 +44,18 @@ class PostLikeDislikeAPIToggle(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PostSerializer
 
-    def get(self, request, pk, value):
+    def get(self, request, pk, LikeOrUnlike):
         obj = get_object_or_404(Post, pk=pk)
         user = request.user
 
-        if value == 'like':
+        if LikeOrUnlike == 'like':
             if user in obj.likes.all():
                 obj.likes.remove(user)
             else:
                 obj.likes.add(user)
             if user in obj.unlikes.all():
                 obj.unlikes.remove(user)
-        elif value == 'unlike':
+        elif LikeOrUnlike == 'unlike':
             if user in obj.unlikes.all():
                 obj.unlikes.remove(user)
             else:

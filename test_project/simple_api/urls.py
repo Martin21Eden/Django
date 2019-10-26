@@ -10,7 +10,7 @@ router.register('users', APIUserViewSet)
 
 
 urlpatterns = [
-    path('posts/<int:pk>/<str:value>/', PostLikeDislikeAPIToggle.as_view(), name='like-api-toggle'),
+    path('posts/<int:pk>/<str:LikeOrUnlike>/', PostLikeDislikeAPIToggle.as_view(), name='like-api-toggle'),
     path('', include(router.urls)),
     path('user_data/', GetUserData.as_view(), name='user-data'),
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
