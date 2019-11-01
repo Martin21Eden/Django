@@ -2,26 +2,21 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Post
 from .serializers import PostSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from .permissions import IsOwnerOrReadOnly, CreateOrReadOnly
+from django.contrib.auth import get_user_model
+from django.http import Http404
+from django.shortcuts import redirect
+
+User = get_user_model()
 
 
 class APIPostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
-
-    def create(self, request, *args, **kwargs):
-        request.data['author'] = request.user.pk
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class APIUserViewSet(ModelViewSet):
@@ -68,3 +63,15 @@ class PostLikeDislikeAPIToggle(APIView):
         obj.save()
         serializer = PostSerializer(obj)
         return Response(serializer.data)
+
+
+def verify(request, uuid):
+    try:
+        user = User.objects.get(verification_uuid=uuid, is_verified=False)
+    except User.DoesNotExist:
+        raise Http404("User does not exist or is already verified")
+
+    user.is_verified = True
+    user.save()
+
+    return redirect('/')

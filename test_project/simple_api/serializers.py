@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from .models import Post
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class PostSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Post
@@ -14,17 +16,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password')
-        write_only_fields = ('password',)
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_verified', 'password')
         read_only_fields = ('id',)
-
-    def create(self, validated_data):
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user

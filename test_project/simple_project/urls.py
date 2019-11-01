@@ -27,4 +27,3 @@ urlpatterns = [
     path('api/', include('simple_api.urls')),
     path('api_doc/', schema_view)
 ]
-

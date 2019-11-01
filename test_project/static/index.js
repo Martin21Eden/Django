@@ -269,7 +269,7 @@ window.onload = function() {
                     d = data[i];
                     let style="hidden;"; //visible
                     let user_data = JSON.parse(window.localStorage.getItem('user_data'));
-                    if (user_data !== null && d.author === user_data.id){
+                    if (user_data !== null && d.author === user_data.username){
                         style = "visible;"
                     }
                     detail_url = '<a href="' + domain + 'api/posts/' + d.id + '/"  class="detail" style="visibility: '+style+'"> Edit </a>';

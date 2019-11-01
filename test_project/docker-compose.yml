@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  app:
+    build: .
+    command: sh -c "python /code/manage.py migrate --noinput && python /code/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    links:
+      - redis
+  redis:
+    image: redis:latest
+    command: sh -c "redis-server"
+  celery:
+    build: .
+    volumes:
+      - .:/code
+    command: celery -A simple_project worker -l info
+    depends_on:
+      - redis
