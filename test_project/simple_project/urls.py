@@ -25,5 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
     path('api/', include('simple_api.urls')),
-    path('api_doc/', schema_view)
+    path('api_doc/', schema_view),
+    path('social/', include('social_django.urls')),
+
 ]

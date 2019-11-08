@@ -32,6 +32,12 @@ from django.urls import reverse_lazy
 LOGIN_URL = reverse_lazy('token_obtain_pair')
 AUTH_USER_MODEL = 'simple_api.User'
 
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_GOOGLE_PLUS_KEY = '71387865875-2d7dm5klj7jmvbmkg9voo581rj9qro7u.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_PLUS_SECRET = 'SRtrcQ02hP055R84vEJ--DUr'
+
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -61,8 +67,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'simple_api',
     'corsheaders',
-    'rest_framework_swagger'
-
+    'rest_framework_swagger',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'simple_project.urls'
@@ -90,6 +97,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -179,3 +188,8 @@ SWAGGER_SETTINGS = {
     },
     'SUPPORTED_SUBMIT_METHODS': ['get', 'post', 'put', 'delete', 'patch'],
 }
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GooglePlusAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)

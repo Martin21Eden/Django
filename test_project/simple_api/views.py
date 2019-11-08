@@ -4,6 +4,7 @@ from .serializers import PostSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from .permissions import IsOwnerOrReadOnly, CreateOrReadOnly
 from django.contrib.auth import get_user_model
@@ -75,3 +76,14 @@ def verify(request, uuid):
     user.save()
 
     return redirect('/')
+
+
+class GetLikedPosts(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+
+    def list(self, request):
+        user_id = request.user.id
+        posts = Post.objects.filter(likes__id=user_id)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
