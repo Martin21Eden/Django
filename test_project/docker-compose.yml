@@ -1,6 +1,15 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
   db:
     image: postgres
   app:
@@ -8,11 +17,10 @@ services:
     command: sh -c "python /code/manage.py migrate --noinput && python /code/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       - db
-      - redis
     links:
       - redis
   redis:
