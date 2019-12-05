@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import APIPostViewSet, APIUserViewSet, GetUserData, PostLikeDislikeAPIToggle, verify, GetLikedPosts
+from .views import APIPostViewSet, APIUserViewSet, GetUserData, PostLikeDislikeAPIToggle, verify, GetLikedPosts, GetPostsByUser
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path(r'^verify/(?P<uuid>[a-z0-9\-]+)/', verify, name='verify'),
-    path('liked_posts/', GetLikedPosts.as_view())
+    path('liked_posts/', GetLikedPosts.as_view()),
+    path('user_posts/<str:username>/', GetPostsByUser.as_view())
 ]

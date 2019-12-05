@@ -87,3 +87,14 @@ class GetLikedPosts(generics.ListCreateAPIView):
         posts = Post.objects.filter(likes__id=user_id)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+class GetPostsByUser(generics.ListCreateAPIView):
+    # permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+
+    def list(self, request, username):
+        posts = Post.objects.filter(author__username=username)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
